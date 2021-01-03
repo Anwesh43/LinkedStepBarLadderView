@@ -216,4 +216,13 @@ class StepBarLadderView(ctx : Context) : View(ctx) {
             }
         }
     }
+
+    companion object {
+
+        fun create(activity : Activity) : StepBarLadderView {
+            val view : StepBarLadderView = StepBarLadderView(activity)
+            activity.setContentView(view)
+            return view
+        }
+    }
 }
