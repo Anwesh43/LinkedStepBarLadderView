@@ -138,4 +138,34 @@ class StepBarLadderView(ctx : Context) : View(ctx) {
             }
         }
     }
+
+    data class SBLNode(var i : Int, val state : State = State()) {
+
+        private var next : SBLNode? = null
+        private var prev : SBLNode? = null
+
+        fun draw(canvas : Canvas, paint : Paint) {
+            canvas.drawSBLNode(i, state.scale, paint)
+        }
+
+        fun update(cb : (Float) -> Unit) {
+            state.update(cb)
+        }
+
+        fun startUpdating(cb : () -> Unit) {
+            state.startUpdating(cb)
+        }
+
+        fun getNext(dir : Int, cb : () -> Unit) : SBLNode {
+            var curr : SBLNode? = prev
+            if (dir == 1) {
+                curr = next
+            }
+            if (curr != null) {
+                return curr
+            }
+            cb()
+            return this
+        }
+    }
 }
