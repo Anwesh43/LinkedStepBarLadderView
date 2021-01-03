@@ -1,0 +1,3 @@
+include ':stepbarladderview'
+include ':app'
+rootProject.name = "LinkedStepBarLadderView"
