@@ -49,21 +49,33 @@ fun Canvas.drawStepBarLadder(scale : Float, w : Float, h : Float, paint : Paint)
         save()
         translate(0f, size * scale.growEnd(1, j))
         drawEndingLine(size, 0f, 0, scale, paint)
+        restore()
+        save()
+        translate(size * j, 0f)
         drawEndingLine(0f, size, 1, scale, paint)
+        restore()
+    }
+    if (sc2 > 0f && sc2 < 1f) {
         for (k in 0..(steps - 1)) {
-            val sck : Float = sc2.divideScale(k, steps).sinify()
+            val sck: Float = sc2.divideScale(k, steps).sinify()
             save()
             translate(size / 2, gap * k)
             for (i in 0..1) {
                 save()
                 scale(1f - 2 * i, 1f)
                 translate(size / 2 * (1 - sck), 0f)
-                drawLine(0f, 0f, 0f, gap, paint)
+                drawLine(
+                    0f,
+                    0f,
+                    0f,
+                    gap * Math.floor(scale.divideScale(1, parts).toDouble()).toFloat()
+                            - gap * Math.floor(scale.divideScale(2, parts).toDouble()).toFloat(),
+                    paint
+                )
                 restore()
             }
             restore()
         }
-        restore()
     }
     restore()
 }
@@ -72,6 +84,8 @@ fun Canvas.drawSBLNode(i : Int, scale : Float, paint : Paint) {
     val w: Float = width.toFloat()
     val h: Float = height.toFloat()
     paint.color = colors[i]
+    paint.strokeCap = Paint.Cap.ROUND
+    paint.strokeWidth = Math.min(w, h) / strokeFactor
     drawStepBarLadder(scale, w, h, paint)
 }
 
@@ -145,6 +159,17 @@ class StepBarLadderView(ctx : Context) : View(ctx) {
 
         private var next : SBLNode? = null
         private var prev : SBLNode? = null
+
+        init {
+            addNeighbor()
+        }
+
+        fun addNeighbor() {
+            if (i < colors.size - 1) {
+                next = SBLNode(i + 1)
+                next?.prev = this
+            }
+        }
 
         fun draw(canvas : Canvas, paint : Paint) {
             canvas.drawSBLNode(i, state.scale, paint)
