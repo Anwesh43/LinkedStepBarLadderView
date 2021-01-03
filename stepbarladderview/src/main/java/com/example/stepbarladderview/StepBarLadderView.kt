@@ -191,4 +191,27 @@ class StepBarLadderView(ctx : Context) : View(ctx) {
             curr.startUpdating(cb)
         }
     }
+
+    data class Renderer(var view : StepBarLadderView) {
+
+        private var sb : StepBarLadder = StepBarLadder(0)
+        private var animator : Animator = Animator(view)
+        private val paint : Paint = Paint(Paint.ANTI_ALIAS_FLAG)
+
+        fun render(canvas : Canvas) {
+            canvas.drawColor(backColor)
+            sb.draw(canvas, paint)
+            animator.animate {
+                sb.update {
+                    animator.stop()
+                }
+            }
+        }
+
+        fun handleTap() {
+            sb.startUpdating {
+                animator.start()
+            }
+        }
+    }
 }
